@@ -1,36 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
+using ClientesApi.Data;
+using ClientesApi.Interfaces;
+using ClientesApi.Services;
 using Microsoft.EntityFrameworkCore;
-using ServicioDeCupones.Data;
-using ServicioDeCupones.Interfaces;
-using ServicioDeCupones.Services;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbContext")));
 
+// inyeccion de dependencias
+builder.Services.AddScoped<IClienteService, ClienteService>();
 
-
-
-// ------evitar errores al obtener datos------
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-
-
-});
-
-//----------INYECCION DE DEPENDENCIAS---------
-
-builder.Services.AddScoped<ICuponesService, CuponesService>();
-builder.Services.AddScoped<ISendEmailService, SendEmailService>();
-
-
-
-
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServicioDeCupones.Data;
+using ServicioDeCupones.Interfaces;
 using ServicioDeCupones.Models;
 
 namespace ServicioDeCupones.Controllers
@@ -15,22 +16,32 @@ namespace ServicioDeCupones.Controllers
     public class CuponesController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly ICuponesService _cuponesService;
 
-        public CuponesController(DataContext context)
+        public CuponesController(DataContext context, ICuponesService cuponesService)
         {
             _context = context;
+            _cuponesService = cuponesService;
         }
 
         // GET: api/Cupones
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CuponesModel>>> GetCupones()
+        [HttpGet("ObtenerCupones")]
+        public async Task<ActionResult<IEnumerable<CuponesModel>>> ObtenerCupones()
         {
-            return await _context.Cupones.ToListAsync();
+            var cupones = await _context.Cupones.ToListAsync();
+
+            if (cupones == null || !cupones.Any())
+            {
+                return NotFound("No se encontraron cupones.");
+            }
+
+            return Ok(cupones);
         }
+
 
         // GET: api/Cupones/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CuponesModel>> GetCuponesModel(int id)
+        public async Task<ActionResult<CuponesModel>> ObtenerCuponPorId(int id)
         {
             var cuponesModel = await _context.Cupones.FindAsync(id);
 
@@ -41,6 +52,8 @@ namespace ServicioDeCupones.Controllers
 
             return cuponesModel;
         }
+
+
 
         // PUT: api/Cupones/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -75,30 +88,34 @@ namespace ServicioDeCupones.Controllers
 
         // POST: api/Cupones
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<CuponesModel>> PostCuponesModel(CuponesModel cuponesModel)
+        [HttpPost("AltaCupon")]
+        public async Task<ActionResult<CuponesModel>> AltaCupon(CuponesModel cuponesModel)
         {
             _context.Cupones.Add(cuponesModel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCuponesModel", new { id = cuponesModel.id_Cupon }, cuponesModel);
+            return CreatedAtAction("ObtenerCupones", new { id = cuponesModel.id_Cupon }, cuponesModel);
         }
 
         // DELETE: api/Cupones/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCuponesModel(int id)
+        public async Task<IActionResult> BorrarCupon(int id)
         {
-            var cuponesModel = await _context.Cupones.FindAsync(id);
-            if (cuponesModel == null)
+            var cuponModel = await _context.Cupones.FindAsync(id);
+            if (cuponModel == null)
             {
                 return NotFound();
             }
 
-            _context.Cupones.Remove(cuponesModel);
+            cuponModel.Activo = false;
+
+            _context.Cupones.Update(cuponModel);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
+        
 
         private bool CuponesModelExists(int id)
         {

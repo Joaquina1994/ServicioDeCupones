@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicioDeCupones", "ServicioDeCupones\ServicioDeCupones.csproj", "{A92AB2BD-4730-4659-9D04-D4A5AAD3B5F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicioDeCupones", "ServicioDeCupones\ServicioDeCupones.csproj", "{A92AB2BD-4730-4659-9D04-D4A5AAD3B5F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientesApi", "ClientesApi\ClientesApi.csproj", "{419805A0-44E7-455D-83FA-C5B9B20B7B4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A92AB2BD-4730-4659-9D04-D4A5AAD3B5F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A92AB2BD-4730-4659-9D04-D4A5AAD3B5F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A92AB2BD-4730-4659-9D04-D4A5AAD3B5F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{419805A0-44E7-455D-83FA-C5B9B20B7B4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{419805A0-44E7-455D-83FA-C5B9B20B7B4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{419805A0-44E7-455D-83FA-C5B9B20B7B4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{419805A0-44E7-455D-83FA-C5B9B20B7B4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
