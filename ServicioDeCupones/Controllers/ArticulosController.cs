@@ -22,15 +22,15 @@ namespace ServicioDeCupones.Controllers
         }
 
         // GET: api/Articulos
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ArticulosModel>>> GetArticulos()
+        [HttpGet("ObtenerArticulos")]
+        public async Task<ActionResult<IEnumerable<ArticulosModel>>> ObtenerArticulos()
         {
             return await _context.Articulos.ToListAsync();
         }
 
         // GET: api/Articulos/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ArticulosModel>> GetArticulosModel(int id)
+        [HttpGet("ObtenerArticuloPorId{id}")]
+        public async Task<ActionResult<ArticulosModel>> ObtenerArticuloPorId(int id)
         {
             var articulosModel = await _context.Articulos.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace ServicioDeCupones.Controllers
         // PUT: api/Articulos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArticulosModel(int id, ArticulosModel articulosModel)
+        public async Task<IActionResult> ModificarArticulo(int id, ArticulosModel articulosModel)
         {
-            if (id != articulosModel.id_Articulos)
+            if (id != articulosModel.Id_Articulo)
             {
                 return BadRequest();
             }
@@ -73,20 +73,29 @@ namespace ServicioDeCupones.Controllers
             return NoContent();
         }
 
-        // POST: api/Articulos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<ArticulosModel>> PostArticulosModel(ArticulosModel articulosModel)
+        
+        //Cuando se agrega un articulo se da de alta un precio
+        [HttpPost("AgregarArticulo")]
+        public async Task<ActionResult<ArticulosModel>> AgregarArticulo(ArticulosModel articulosModel, decimal precio)
         {
             _context.Articulos.Add(articulosModel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetArticulosModel", new { id = articulosModel.id_Articulos }, articulosModel);
+            PreciosModel precioModel = new PreciosModel
+            {
+                Id_Articulo = articulosModel.Id_Articulo,
+                Precio = precio
+            };
+
+            _context.Precios.Add(precioModel);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("ObtenerArticuloPorId", new { id = articulosModel.Id_Articulo }, articulosModel);
         }
 
         // DELETE: api/Articulos/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArticulosModel(int id)
+        public async Task<IActionResult> BorrarArticulo(int id)
         {
             var articulosModel = await _context.Articulos.FindAsync(id);
             if (articulosModel == null)
@@ -94,7 +103,9 @@ namespace ServicioDeCupones.Controllers
                 return NotFound();
             }
 
-            _context.Articulos.Remove(articulosModel);
+            articulosModel.Activo = false;
+
+            _context.Articulos.Update(articulosModel);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +113,7 @@ namespace ServicioDeCupones.Controllers
 
         private bool ArticulosModelExists(int id)
         {
-            return _context.Articulos.Any(e => e.id_Articulos == id);
+            return _context.Articulos.Any(e => e.Id_Articulo == id);
         }
     }
 }

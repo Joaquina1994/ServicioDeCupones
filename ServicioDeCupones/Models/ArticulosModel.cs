@@ -7,7 +7,7 @@ namespace ServicioDeCupones.Models
     public class ArticulosModel
     {
         [Key]
-        public int id_Articulos { get; set; }
+        public int Id_Articulo { get; set; }
         public string Nombre_Articulo   { get; set; }
         public string Descripcion_Articulo { get; set; }
         public bool Activo { get; set; }

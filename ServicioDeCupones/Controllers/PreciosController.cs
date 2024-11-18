@@ -21,11 +21,23 @@ namespace ServicioDeCupones.Controllers
             _context = context;
         }
 
-        // GET: api/Precios
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PreciosModel>>> GetPrecios()
+        // trae los articulos con sus precios, si no tienen precio pone 0
+        [HttpGet("ObtenerPrecios")]
+        public async Task<ActionResult<IEnumerable<PreciosModel>>> ObtenerPrecios()
         {
-            return await _context.Precios.ToListAsync();
+            var articulosConPrecios = await _context.Articulos
+        .Select(a => new
+        {
+            a.Id_Articulo,
+            a.Nombre_Articulo,
+            Precio = _context.Precios
+                        .Where(p => p.Id_Articulo == a.Id_Articulo)
+                        .Select(p => p.Precio)
+                        .FirstOrDefault() // Esto devuelve 0 si no hay coincidencias
+        })
+        .ToListAsync();
+
+            return Ok(articulosConPrecios);
         }
 
         // GET: api/Precios/5
@@ -76,7 +88,7 @@ namespace ServicioDeCupones.Controllers
         // POST: api/Precios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PreciosModel>> PostPreciosModel(PreciosModel preciosModel)
+        public async Task<ActionResult<PreciosModel>> AltaPrecio(PreciosModel preciosModel)
         {
             _context.Precios.Add(preciosModel);
             await _context.SaveChangesAsync();
@@ -86,7 +98,7 @@ namespace ServicioDeCupones.Controllers
 
         // DELETE: api/Precios/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePreciosModel(int id)
+        public async Task<IActionResult> BorrarPrecio(int id)
         {
             var preciosModel = await _context.Precios.FindAsync(id);
             if (preciosModel == null)

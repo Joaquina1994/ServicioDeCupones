@@ -21,8 +21,8 @@ namespace ServicioDeCupones.Data
         // configuracion de relaciones entre PK
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ArticulosModel>().HasKey(articulo => articulo.id_Articulos );
-            modelBuilder.Entity<CategoriasModel>().HasKey(categoria => categoria.id_Categorias);
+            modelBuilder.Entity<ArticulosModel>().HasKey(articulo => articulo.Id_Articulo );
+            modelBuilder.Entity<CategoriasModel>().HasKey(categoria => categoria.Id_Categoria);
             modelBuilder.Entity<Cupones_CategoriasModel>().HasKey(cuponCategoria => cuponCategoria.Id_Cupones_Categorias);
             modelBuilder.Entity<Cupones_ClientesModel>().HasKey(cuponCliente => cuponCliente.NroCupon);
             modelBuilder.Entity<Cupones_DetalleModel>().HasKey(cuponDetalle => cuponDetalle.id_Cupon);

@@ -7,8 +7,10 @@ namespace ServicioDeCupones.Models
     public class CategoriasModel
     {
         [Key]
-        public int id_Categorias { get; set; }
+        public int Id_Categoria { get; set; }
         public string Nombre { get; set; }
+
+        public bool Activo { get; set; }
 
         public virtual ICollection<Cupones_CategoriasModel>? Cupones_Categorias { get; set; }
 

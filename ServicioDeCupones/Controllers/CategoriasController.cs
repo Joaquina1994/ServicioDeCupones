@@ -22,15 +22,15 @@ namespace ServicioDeCupones.Controllers
         }
 
         // GET: api/Categorias
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoriasModel>>> GetCategorias()
+        [HttpGet("ObtenerCategorias")]
+        public async Task<ActionResult<IEnumerable<CategoriasModel>>> ObtenerCategorias()
         {
             return await _context.Categorias.ToListAsync();
         }
 
         // GET: api/Categorias/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CategoriasModel>> GetCategoriasModel(int id)
+        [HttpGet("ObtenerCategoriaPorId{id}")]
+        public async Task<ActionResult<CategoriasModel>> ObtenerCategoriaPorId(int id)
         {
             var categoriasModel = await _context.Categorias.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace ServicioDeCupones.Controllers
         // PUT: api/Categorias/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategoriasModel(int id, CategoriasModel categoriasModel)
+        public async Task<IActionResult> ModificarCategoria(int id, CategoriasModel categoriasModel)
         {
-            if (id != categoriasModel.id_Categorias)
+            if (id != categoriasModel.Id_Categoria)
             {
                 return BadRequest();
             }
@@ -75,18 +75,18 @@ namespace ServicioDeCupones.Controllers
 
         // POST: api/Categorias
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<CategoriasModel>> PostCategoriasModel(CategoriasModel categoriasModel)
+        [HttpPost("AgregarCategoria")]
+        public async Task<ActionResult<CategoriasModel>> AgregarCategoria(CategoriasModel categoriasModel)
         {
             _context.Categorias.Add(categoriasModel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategoriasModel", new { id = categoriasModel.id_Categorias }, categoriasModel);
+            return CreatedAtAction("ObtenerCategoriaPorId", new { id = categoriasModel.Id_Categoria }, categoriasModel);
         }
 
         // DELETE: api/Categorias/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategoriasModel(int id)
+        public async Task<IActionResult> BorrarCategoria(int id)
         {
             var categoriasModel = await _context.Categorias.FindAsync(id);
             if (categoriasModel == null)
@@ -94,7 +94,9 @@ namespace ServicioDeCupones.Controllers
                 return NotFound();
             }
 
-            _context.Categorias.Remove(categoriasModel);
+            categoriasModel.Activo = false;
+
+            _context.Categorias.Update(categoriasModel);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +104,7 @@ namespace ServicioDeCupones.Controllers
 
         private bool CategoriasModelExists(int id)
         {
-            return _context.Categorias.Any(e => e.id_Categorias == id);
+            return _context.Categorias.Any(e => e.Id_Categoria == id);
         }
     }
 }
