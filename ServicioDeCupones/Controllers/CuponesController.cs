@@ -40,10 +40,23 @@ namespace ServicioDeCupones.Controllers
 
 
         // GET: api/Cupones/5
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<ActionResult<CuponesModel>> ObtenerCuponPorId(int id)
         {
             var cuponesModel = await _context.Cupones.FindAsync(id);
+
+            if (cuponesModel == null)
+            {
+                return NotFound();
+            }
+
+            return cuponesModel;
+        }
+
+        [HttpGet("cliente/{codCliente}")]
+        public async Task<ActionResult<Cupones_ClientesModel>> ObtenerCuponPorCodCliente(string codCliente)
+        {
+            var cuponesModel = await _context.Cupones_Clientes.FindAsync(codCliente);
 
             if (cuponesModel == null)
             {

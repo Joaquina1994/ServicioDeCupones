@@ -25,7 +25,19 @@ namespace ServicioDeCupones.Controllers
         [HttpGet("ObtenerArticulos")]
         public async Task<ActionResult<IEnumerable<ArticulosModel>>> ObtenerArticulos()
         {
-            return await _context.Articulos.ToListAsync();
+            var articulosConPrecios = await _context.Articulos
+        .Select(a => new
+        {
+            a.Id_Articulo,
+            a.Nombre_Articulo,
+            Precio = _context.Precios
+                        .Where(p => p.Id_Articulo == a.Id_Articulo)
+                        .Select(p => p.Precio)
+                        .FirstOrDefault()
+        })
+        .ToListAsync();
+
+            return Ok(articulosConPrecios);
         }
 
         // GET: api/Articulos/5
