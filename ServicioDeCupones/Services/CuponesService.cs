@@ -6,11 +6,10 @@ namespace ServicioDeCupones.Services
     {
         public async Task<string> GenerarNumeroCupon()
         {
-            //crear n cupon aleatorio
-            var NumeroCupon = "111-111-111";
+            Random random = new Random();
+            string numeroCupon = $"{random.Next(100, 1000)}-{random.Next(100, 1000)}-{random.Next(100, 1000)}";
+            return numeroCupon;
 
-            return NumeroCupon;
-            
         }
     }
 }

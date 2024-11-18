@@ -24,62 +24,8 @@ namespace ClientesApi.Controllers
             _clienteService = clienteService;
         }
 
-        /*// GET: api/Clientes
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClientesModel>>> GetClientes()
-        {
-            return await _context.Clientes.ToListAsync();
-        }
-
-        // GET: api/Clientes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ClientesModel>> GetClientesModel(string id)
-        {
-            var clientesModel = await _context.Clientes.FindAsync(id);
-
-            if (clientesModel == null)
-            {
-                return NotFound();
-            }
-
-            return clientesModel;
-        }
-
-        // PUT: api/Clientes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutClientesModel(string id, ClientesModel clientesModel)
-        {
-            if (id != clientesModel.CodCliente)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(clientesModel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClientesModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }*/
-
-        // POST: api/Clientes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<IActionResult> EnviarSolicitudCupones([FromBody]ClientesDto clientesDto)
+        [HttpPost("EnviarSolicitudCupones")]
+        public async Task<IActionResult> EnviarSolicitudCupones([FromBody] ClientesDto clientesDto)
         {
             try
             {
@@ -91,26 +37,36 @@ namespace ClientesApi.Controllers
                 return BadRequest($"Error:{ex.Message}");
             }
         }
-        
-        /*// DELETE: api/Clientes/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteClientesModel(string id)
+
+        [HttpPost("QuemarCupon")]
+        public async Task<IActionResult> QuemarCupon(string nroCupon)
         {
-            var clientesModel = await _context.Clientes.FindAsync(id);
-            if (clientesModel == null)
+            try
             {
-                return NotFound();
+                var respuesta = await _clienteService.QuemarCupon(nroCupon);
+                return Ok(respuesta);
             }
-
-            _context.Clientes.Remove(clientesModel);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest($"Error:{ex.Message}");
+            }
         }
 
-        private bool ClientesModelExists(string id)
+        [HttpGet]
+        public async Task<IActionResult> ObtenerCuponesActivos(string codCliente)
         {
-            return _context.Clientes.Any(e => e.CodCliente == id);
-        }*/
+            try
+            {
+                var respuesta = await _clienteService.ObtenerCuponesActivos(codCliente);
+                return Ok(respuesta);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error:{ex.Message}");
+            }
+            
+        }
+       
     }
 }

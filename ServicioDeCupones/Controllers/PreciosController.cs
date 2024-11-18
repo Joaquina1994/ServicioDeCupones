@@ -33,7 +33,7 @@ namespace ServicioDeCupones.Controllers
             Precio = _context.Precios
                         .Where(p => p.Id_Articulo == a.Id_Articulo)
                         .Select(p => p.Precio)
-                        .FirstOrDefault() // Esto devuelve 0 si no hay coincidencias
+                        .FirstOrDefault() 
         })
         .ToListAsync();
 
@@ -57,7 +57,7 @@ namespace ServicioDeCupones.Controllers
         // PUT: api/Precios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPreciosModel(int id, PreciosModel preciosModel)
+        public async Task<IActionResult> ModificarPrecio(int id, PreciosModel preciosModel)
         {
             if (id != preciosModel.Id_Precio)
             {
@@ -81,15 +81,17 @@ namespace ServicioDeCupones.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
 
-        // POST: api/Precios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        // da de alta un precio y se lo asigna a un articulo
+        [HttpPost("AltaPrecio")]
         public async Task<ActionResult<PreciosModel>> AltaPrecio(PreciosModel preciosModel)
         {
+            if (!_context.Articulos.Any(a => a.Id_Articulo == preciosModel.Id_Articulo))
+            {
+                return BadRequest("El artículo no existe.");
+            }
             _context.Precios.Add(preciosModel);
             await _context.SaveChangesAsync();
 
@@ -108,6 +110,19 @@ namespace ServicioDeCupones.Controllers
 
             _context.Precios.Remove(preciosModel);
             await _context.SaveChangesAsync();
+
+            var articulo = await _context.Articulos.FindAsync(preciosModel.Id_Articulo);
+            if (articulo != null)
+            {
+                var nuevoPrecio = new PreciosModel
+                {
+                    Id_Articulo = articulo.Id_Articulo,
+                    Precio = 0
+                };
+
+                _context.Precios.Add(nuevoPrecio);
+                await _context.SaveChangesAsync();
+            }
 
             return NoContent();
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ServicioDeCupones.Data;
 using ServicioDeCupones.Interfaces;
@@ -58,11 +59,84 @@ namespace ServicioDeCupones.Controllers
 
         }
 
-        /*[HttpPost("UsarCupon")]
-        public async Task<IActionResult> UsarCupon(string NroCupon, string CodCliente)
+
+        // se debe enviar el numero de cupon, y eliminar el registro de cupones_clientes y agregar el registro en cupones_historial
+        [HttpPost("QuemarCupon")]
+        public async Task<IActionResult> QuemarCupon(string nroCupon)
         {
+            try
+            {
+                var cuponCliente = await _dataContext.Cupones_Clientes
+                    .FirstOrDefaultAsync(c => c.NroCupon == nroCupon);
+
+                if (cuponCliente == null)
+                {
+                    return NotFound("El cupón no existe o ya ha sido usado.");
+                }
+
+                
+                Cupones_HistorialModel cuponHistorial = new Cupones_HistorialModel
+                {
+                    id_Cupon = cuponCliente.id_Cupon,
+                    CodCliente = cuponCliente.CodCliente,
+                    NroCupon = cuponCliente.NroCupon,
+                    FechaUso = DateTime.Now
+                };
+
+                _dataContext.Cupones_Historials.Add(cuponHistorial);
+
+                
+                _dataContext.Cupones_Clientes.Remove(cuponCliente);
+
+                
+                await _dataContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Mensaje = "El cupón ha sido utilizado correctamente.",
+                    NroCupon = nroCupon
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("ObtenerCuponesActivos")]
+        public async Task<IActionResult> ObtenerCuponesActivos(string codCliente)
+        {
+            if (string.IsNullOrEmpty(codCliente))
+            {
+                return BadRequest("El código de cliente es obligatorio.");
+            }
+
+            var cuponesActivos = await (from c in _dataContext.Cupones
+                                        join cc in _dataContext.Cupones_Clientes 
+                                        on c.id_Cupon equals cc.id_Cupon
+                                        where c.Activo == true && cc.CodCliente == codCliente 
+                                        select new
+                                        {
+                                            c.id_Cupon,
+                                            c.Nombre,
+                                            c.Descripcion,
+                                            c.PorcentajeDto,
+                                            c.ImportePromo,
+                                            c.FechaInicio,
+                                            c.FechaFin,
+                                            cc.NroCupon,
+                                            cc.FechaAsignado
+                                        }).ToListAsync();
+
+            if (cuponesActivos == null || !cuponesActivos.Any())
+            {
+                return NotFound($"No se encontraron cupones activos para el cliente con código {codCliente}.");
+            }
+
+            return Ok(cuponesActivos);
+        }
 
 
-        }*/
+
     }
 }
