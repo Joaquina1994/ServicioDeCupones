@@ -151,7 +151,7 @@ namespace ServicioDeCupones.Controllers
 
 
 
-        [HttpGet("ObtenerCuponesActivos")]
+        [HttpGet("ObtenerCuponesActivos/{CodCliente}")]
         public async Task<IActionResult> ObtenerCuponesActivos([FromQuery] string codCliente)
         {
             try
