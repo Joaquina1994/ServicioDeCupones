@@ -53,16 +53,10 @@ namespace ServicioDeCupones.Controllers
             return cuponesModel;
         }
 
-        [HttpGet("cliente/{CodCliente}")]
+        [HttpGet("cupones/{codCliente}")]
         public async Task<ActionResult<Cupones_ClientesModel>> ObtenerCuponPorCodCliente(string codCliente)
         {
-            // Verificar el parámetro recibido
-            if (string.IsNullOrWhiteSpace(codCliente))
-            {
-                return BadRequest(new { message = "El código de cliente no puede estar vacío." });
-            }
-
-            // Buscar en la base de datos
+            
             var cuponesModel = await _context.Cupones_Clientes
                 .FirstOrDefaultAsync(c => c.CodCliente == codCliente);
 
