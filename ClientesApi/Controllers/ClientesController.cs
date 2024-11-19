@@ -39,7 +39,7 @@ namespace ClientesApi.Controllers
         }
 
         [HttpPost("QuemarCupon")]
-        public async Task<IActionResult> QuemarCupon(string nroCupon)
+        public async Task<IActionResult> QuemarCupon([FromQuery]string nroCupon, ClientesDto clientesDto)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace ClientesApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObtenerCuponesActivos(string codCliente)
+        public async Task<IActionResult> ObtenerCuponesActivos([FromQuery]string codCliente)
         {
             try
             {
