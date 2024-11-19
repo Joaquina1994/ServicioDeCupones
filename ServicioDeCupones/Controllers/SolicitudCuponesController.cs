@@ -62,7 +62,7 @@ namespace ServicioDeCupones.Controllers
 
         // se debe enviar el numero de cupon, y eliminar el registro de cupones_clientes y agregar el registro en cupones_historial
         [HttpPost("QuemarCupon")]
-        public async Task<IActionResult> QuemarCupon(string nroCupon)
+        public async Task<IActionResult> QuemarCupon(string nroCupon, ClientesDto clientesDto)
         {
             try
             {
@@ -90,6 +90,8 @@ namespace ServicioDeCupones.Controllers
 
                 
                 await _dataContext.SaveChangesAsync();
+
+                await _sendEmailService.EnviarEmailClienteCuponUsado(clientesDto.Email, nroCupon);
 
                 return Ok(new
                 {
