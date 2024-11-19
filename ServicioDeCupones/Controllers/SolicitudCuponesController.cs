@@ -9,6 +9,8 @@ using System.Drawing;
 
 namespace ServicioDeCupones.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class SolicitudCuponesController : ControllerBase
     {
         private readonly DataContext _dataContext;

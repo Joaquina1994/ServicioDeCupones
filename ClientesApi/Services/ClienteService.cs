@@ -12,7 +12,7 @@ namespace ClientesApi.Services
             try
             {
                 var cliente = new HttpClient();
-                var respuesta = await cliente.GetAsync($"https://localhost:7131/ObtenerCuponesActivos/{codCliente}");
+                var respuesta = await cliente.GetAsync($"https://localhost:7131/api/SolicitudCupones/ObtenerCuponesActivos/{codCliente}");
 
                 if (respuesta.IsSuccessStatusCode)
                 {
@@ -36,7 +36,7 @@ namespace ClientesApi.Services
             {
                 var cliente = new HttpClient();
                 var contenido = new StringContent(JsonConvert.SerializeObject(new { NroCupon = nroCupon }), Encoding.UTF8, "application/json");
-                var respuesta = await cliente.PostAsync("https://localhost:7131/QuemarCupon", contenido);
+                var respuesta = await cliente.PostAsync("https://localhost:7131/api/SolicitudCupones/QuemarCupon", contenido);
 
                 if (respuesta.IsSuccessStatusCode)
                 {
@@ -62,7 +62,7 @@ namespace ClientesApi.Services
                 var jsonCliente = JsonConvert.SerializeObject(clientesDto);
                 var contenido = new StringContent(jsonCliente, Encoding.UTF8, "application/json");
                 var cliente = new HttpClient();
-                var respuesta = await cliente.PostAsync("https://localhost:7131/SolicitarCupon", contenido);
+                var respuesta = await cliente.PostAsync("https://localhost:7131/api/SolicitudCupones/SolicitarCupon", contenido);
 
                 if (respuesta.IsSuccessStatusCode)
                 {
