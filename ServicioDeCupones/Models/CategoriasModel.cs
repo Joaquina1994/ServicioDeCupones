@@ -13,6 +13,8 @@ namespace ServicioDeCupones.Models
         public bool Activo { get; set; }
 
         public virtual ICollection<Cupones_CategoriasModel>? Cupones_Categorias { get; set; }
+        public virtual ICollection<ArticulosModel>? Articulos { get; set; }
+
 
     }
 }
